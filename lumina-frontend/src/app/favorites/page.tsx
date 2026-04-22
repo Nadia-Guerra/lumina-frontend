@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ProductCard from '@/components/ProductCard';
+import { useModal } from '@/app/share/modals/ModalContext';
 
 const COLORS_A = ['#F297A0', '#E8739A', '#C0504D', '#8B2635', '#5C1A2A'];
 const COLORS_B = ['#FBBFC7', '#F297A0', '#D95F7B', '#A33050', '#6B1A30'];
@@ -20,6 +21,7 @@ const TOTAL_PAGES = 5;
 
 export default function FavoritesPage() {
   const [page, setPage] = useState(1);
+  const { openRecommendationModal } = useModal();
   const [likedIds, setLikedIds] = useState<Set<number>>(
     new Set(MOCK_FAVORITES.map((p) => p.id))
   );
@@ -55,7 +57,10 @@ export default function FavoritesPage() {
           <h1 className="text-sm font-bold text-[#F297A0] tracking-widest uppercase max-w-xs leading-relaxed">
             Explora tus favoritos y genera recomendaciones personalizadas
           </h1>
-          <button className="shrink-0 px-6 py-2.5 bg-[#F297A0] hover:bg-[#E8739A] text-white font-semibold rounded-full transition-colors text-sm whitespace-nowrap">
+          <button
+            onClick={openRecommendationModal}
+            className="shrink-0 px-6 py-2.5 bg-[#F297A0] hover:bg-[#E8739A] text-white font-semibold rounded-full transition-colors text-sm whitespace-nowrap"
+          >
             Generar estilos →
           </button>
         </div>

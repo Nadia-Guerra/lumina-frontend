@@ -2,14 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-/**
- * LoadingBar – barra de progreso indeterminada en la parte superior de la pantalla.
- * Úsala durante carga de datos o transiciones de ruta.
- *
- * Props:
- *   loading  – muestra/oculta la barra
- *   color    – color hex (default: rosa Lumina)
- */
 interface LoadingBarProps {
   loading: boolean;
   color?: string;

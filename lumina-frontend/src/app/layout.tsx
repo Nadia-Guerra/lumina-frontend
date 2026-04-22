@@ -5,6 +5,7 @@ import { ModalProvider } from "@/app/share/modals/ModalContext";
 import LoginModal from "@/app/share/modals/LoginModal";
 import ReviewModal from "@/app/share/modals/ReviewModal";
 import ProfileModal from "@/app/share/modals/ProfileModal";
+import RecommendationModal from "@/app/share/modals/RecommendationModal";
 import Navbar from "@/app/share/navbar/Navbar";
 
 const poppins = Poppins({
@@ -45,6 +46,7 @@ export default function RootLayout({
           <LoginModal />
           <ReviewModal />
           <ProfileModal />
+          <RecommendationModal />
         </ModalProvider>
       </body>
     </html>
