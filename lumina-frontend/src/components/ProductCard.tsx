@@ -105,7 +105,7 @@ export default function ProductCard({
         <div className="flex items-center gap-1.5">
           {colors.map((c, i) => (
             <button
-              key={c}
+              key={`${i}-${c}`}
               onClick={(e) => { e.stopPropagation(); setActiveColor(i); }}
               style={{ backgroundColor: c }}
               className={`w-4 h-4 rounded-full transition-all ${
