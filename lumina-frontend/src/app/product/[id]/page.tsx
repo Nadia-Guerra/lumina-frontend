@@ -87,7 +87,7 @@ export default function ProductPage() {
             </div>
             
             <Link 
-              href="#" 
+              href={`/product/${id}/reviews`}
               className="text-lg font-bold text-[#F297A0] hover:text-[#E8739A] transition-colors"
             >
               Ver reseñas →

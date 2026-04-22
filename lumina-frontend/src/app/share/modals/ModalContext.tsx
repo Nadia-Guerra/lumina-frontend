@@ -6,12 +6,16 @@ interface ModalContextType {
   isLoginModalOpen: boolean;
   openLoginModal: () => void;
   closeLoginModal: () => void;
+  isReviewModalOpen: boolean;
+  openReviewModal: () => void;
+  closeReviewModal: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   return (
     <ModalContext.Provider
@@ -19,6 +23,9 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         isLoginModalOpen,
         openLoginModal: () => setIsLoginModalOpen(true),
         closeLoginModal: () => setIsLoginModalOpen(false),
+        isReviewModalOpen,
+        openReviewModal: () => setIsReviewModalOpen(true),
+        closeReviewModal: () => setIsReviewModalOpen(false),
       }}
     >
       {children}

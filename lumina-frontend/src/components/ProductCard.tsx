@@ -12,6 +12,7 @@ export interface ProductCardProps {
   rating: number;
   images?: string[];
   colors?: string[];
+  defaultLiked?: boolean;
 }
 
 const DEFAULT_COLORS = ['#F297A0', '#E8739A', '#C0504D', '#8B2635', '#5C1A2A'];
@@ -24,9 +25,10 @@ export default function ProductCard({
   rating,
   images = ['/product_example.png'],
   colors = DEFAULT_COLORS,
+  defaultLiked = false,
 }: ProductCardProps) {
   const [activeImg, setActiveImg] = useState(0);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(defaultLiked);
   const [activeColor, setActiveColor] = useState(0);
   const router = useRouter();
 
@@ -83,7 +85,7 @@ export default function ProductCard({
           <span className="text-sm font-semibold text-gray-700">{brand}</span>
           <button
             onClick={(e) => { e.stopPropagation(); setLiked((l) => !l); }}
-            className={`text-lg leading-none transition-transform active:scale-75 ${liked ? 'text-[#F297A0]' : 'text-[#F297A0]/50'}`}
+            className={`text-2xl leading-none transition-transform active:scale-75 ${liked ? 'text-[#F297A0]' : 'text-[#F297A0]/40'}`}
             aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           >
             {liked ? '♥' : '♡'}

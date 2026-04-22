@@ -3,6 +3,7 @@ import { Poppins, Parisienne } from "next/font/google";
 import "./globals.css";
 import { ModalProvider } from "@/app/share/modals/ModalContext";
 import LoginModal from "@/app/share/modals/LoginModal";
+import ReviewModal from "@/app/share/modals/ReviewModal";
 import Navbar from "@/app/share/navbar/Navbar";
 
 const poppins = Poppins({
@@ -41,6 +42,7 @@ export default function RootLayout({
             {children}
           </div>
           <LoginModal />
+          <ReviewModal />
         </ModalProvider>
       </body>
     </html>
