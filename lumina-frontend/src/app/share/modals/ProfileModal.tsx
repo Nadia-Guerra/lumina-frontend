@@ -1,16 +1,12 @@
 'use client';
 
 import { useModal } from './ModalContext';
+import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
-
-const MOCK_PROFILE = {
-  nombre: 'Emilia García',
-  username: 'emilia_g',
-  correo: 'emilia@lumina.app',
-};
 
 export default function ProfileModal() {
   const { isProfileModalOpen, closeProfileModal } = useModal();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -21,6 +17,11 @@ export default function ProfileModal() {
   }, [closeProfileModal]);
 
   if (!isProfileModalOpen) return null;
+
+  const handleLogout = async () => {
+    await logout();
+    closeProfileModal();
+  };
 
   return (
     <div
@@ -41,9 +42,8 @@ export default function ProfileModal() {
         {/* Profile fields */}
         <div className="w-full flex flex-col gap-4">
           {[
-            { label: 'Nombre', value: MOCK_PROFILE.nombre },
-            { label: 'Nombre de usuario', value: MOCK_PROFILE.username },
-            { label: 'Correo', value: MOCK_PROFILE.correo },
+            { label: 'Nombre de usuario', value: user?.username ?? '—' },
+            { label: 'Correo', value: user?.email ?? '—' },
           ].map(({ label, value }) => (
             <div key={label} className="flex flex-col gap-1">
               <span className="text-gray-700 text-sm font-medium">{label}</span>
@@ -56,7 +56,7 @@ export default function ProfileModal() {
 
         {/* Cerrar sesión */}
         <button
-          onClick={closeProfileModal}
+          onClick={handleLogout}
           className="mt-2 px-10 py-2.5 bg-[#FBBFC7] hover:bg-[#F297A0] text-white font-semibold rounded-full transition-colors text-sm"
         >
           Cerrar Sesión

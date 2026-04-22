@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Parisienne } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 import { ModalProvider } from "@/app/share/modals/ModalContext";
 import LoginModal from "@/app/share/modals/LoginModal";
 import ReviewModal from "@/app/share/modals/ReviewModal";
@@ -38,15 +39,17 @@ export default function RootLayout({
       className={`${poppins.variable} ${parisienne.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <ModalProvider>
-          <Navbar />
-          {/* MainWrapper aplica pt-[60px] solo en rutas con navbar */}
-          <MainWrapper>{children}</MainWrapper>
-          <LoginModal />
-          <ReviewModal />
-          <ProfileModal />
-          <RecommendationModal />
-        </ModalProvider>
+        <AuthProvider>
+          <ModalProvider>
+            <Navbar />
+            {/* MainWrapper aplica pt-[60px] solo en rutas con navbar */}
+            <MainWrapper>{children}</MainWrapper>
+            <LoginModal />
+            <ReviewModal />
+            <ProfileModal />
+            <RecommendationModal />
+          </ModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -6,40 +6,64 @@ interface ModalContextType {
   isLoginModalOpen: boolean;
   openLoginModal: () => void;
   closeLoginModal: () => void;
+
   isReviewModalOpen: boolean;
-  openReviewModal: () => void;
+  reviewProductId: number | null;
+  openReviewModal: (productId: number) => void;
   closeReviewModal: () => void;
+
   isProfileModalOpen: boolean;
   openProfileModal: () => void;
   closeProfileModal: () => void;
+
   isRecommendationModalOpen: boolean;
-  openRecommendationModal: () => void;
+  recommendationId: number | null;
+  openRecommendationModal: (id: number) => void;
   closeRecommendationModal: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export function ModalProvider({ children }: { children: ReactNode }) {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen]           = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen]         = useState(false);
+  const [reviewProductId, setReviewProductId]             = useState<number | null>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen]       = useState(false);
   const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false);
+  const [recommendationId, setRecommendationId]           = useState<number | null>(null);
 
   return (
     <ModalContext.Provider
       value={{
         isLoginModalOpen,
-        openLoginModal: () => setIsLoginModalOpen(true),
+        openLoginModal:  () => setIsLoginModalOpen(true),
         closeLoginModal: () => setIsLoginModalOpen(false),
+
         isReviewModalOpen,
-        openReviewModal: () => setIsReviewModalOpen(true),
-        closeReviewModal: () => setIsReviewModalOpen(false),
+        reviewProductId,
+        openReviewModal: (productId) => {
+          setReviewProductId(productId);
+          setIsReviewModalOpen(true);
+        },
+        closeReviewModal: () => {
+          setIsReviewModalOpen(false);
+          setReviewProductId(null);
+        },
+
         isProfileModalOpen,
-        openProfileModal: () => setIsProfileModalOpen(true),
+        openProfileModal:  () => setIsProfileModalOpen(true),
         closeProfileModal: () => setIsProfileModalOpen(false),
+
         isRecommendationModalOpen,
-        openRecommendationModal: () => setIsRecommendationModalOpen(true),
-        closeRecommendationModal: () => setIsRecommendationModalOpen(false),
+        recommendationId,
+        openRecommendationModal: (id) => {
+          setRecommendationId(id);
+          setIsRecommendationModalOpen(true);
+        },
+        closeRecommendationModal: () => {
+          setIsRecommendationModalOpen(false);
+          setRecommendationId(null);
+        },
       }}
     >
       {children}

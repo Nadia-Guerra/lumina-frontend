@@ -66,7 +66,7 @@ export default function FavoritesPage() {
             Explora tus favoritos y genera recomendaciones personalizadas
           </h1>
           <button
-            onClick={openRecommendationModal}
+            onClick={() => openRecommendationModal(1)}
             className="shrink-0 px-6 py-2.5 bg-[#F297A0] hover:bg-[#E8739A] text-white font-semibold rounded-full transition-colors text-sm whitespace-nowrap"
           >
             Generar estilos →

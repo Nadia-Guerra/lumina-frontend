@@ -5,18 +5,31 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Modal from './Modal';
 import { useModal } from './ModalContext';
+import { useAuth, parseAuthError } from '@/context/AuthContext';
 
 export default function LoginModal() {
   const { isLoginModalOpen, closeLoginModal } = useModal();
+  const { login } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError]       = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Conectar con API de autenticación
-    closeLoginModal();
-    router.push('/home');
+    setError('');
+    setIsLoading(true);
+    try {
+      await login(email, password);
+      closeLoginModal();
+      router.push('/home');
+    } catch (err) {
+      setError(parseAuthError(err));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRegister = () => {
@@ -57,7 +70,8 @@ export default function LoginModal() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ingresa tu correo electrónico"
                 required
-                className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#E8739A] focus:ring-2 focus:ring-[#E8739A]/20 transition-all"
+                disabled={isLoading}
+                className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#E8739A] focus:ring-2 focus:ring-[#E8739A]/20 transition-all disabled:opacity-60"
               />
             </div>
 
@@ -72,16 +86,32 @@ export default function LoginModal() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Ingresa tu contraseña"
                 required
-                className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#E8739A] focus:ring-2 focus:ring-[#E8739A]/20 transition-all"
+                disabled={isLoading}
+                className="border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#E8739A] focus:ring-2 focus:ring-[#E8739A]/20 transition-all disabled:opacity-60"
               />
             </div>
+
+            {/* Error message */}
+            {error && (
+              <p className="text-red-500 text-sm font-medium text-center">
+                {error}
+              </p>
+            )}
 
             <button
               id="login-submit"
               type="submit"
-              className="w-full bg-[#E8739A] hover:bg-[#d45f87] active:scale-[0.98] text-white rounded-xl py-3 font-semibold text-base transition-all mt-1 cursor-pointer"
+              disabled={isLoading}
+              className="w-full bg-[#E8739A] hover:bg-[#d45f87] active:scale-[0.98] text-white rounded-xl py-3 font-semibold text-base transition-all mt-1 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Continuar
+              {isLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Entrando...
+                </>
+              ) : (
+                'Continuar'
+              )}
             </button>
           </form>
 
