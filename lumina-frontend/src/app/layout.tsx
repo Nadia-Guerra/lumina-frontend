@@ -7,6 +7,7 @@ import ReviewModal from "@/app/share/modals/ReviewModal";
 import ProfileModal from "@/app/share/modals/ProfileModal";
 import RecommendationModal from "@/app/share/modals/RecommendationModal";
 import Navbar from "@/app/share/navbar/Navbar";
+import MainWrapper from "@/app/share/ui/MainWrapper";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -39,10 +40,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ModalProvider>
           <Navbar />
-          {/* pt-[60px] compensa el navbar fixed */}
-          <div className="pt-[60px] flex flex-col flex-1">
-            {children}
-          </div>
+          {/* MainWrapper aplica pt-[60px] solo en rutas con navbar */}
+          <MainWrapper>{children}</MainWrapper>
           <LoginModal />
           <ReviewModal />
           <ProfileModal />

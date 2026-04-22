@@ -9,6 +9,10 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const isLanding = pathname === '/';
+  const isRegister = pathname === '/register';
+
+  if (isRegister) return null;
+
 
   const links = isLanding
     ? [
