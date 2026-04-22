@@ -1,21 +1,9 @@
 'use client';
 
 import { useModal } from './ModalContext';
+import { useRecommendation } from '@/hooks/useRecommendation';
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
-
-// Simulación del response del API mientras no hay integración real
-const MOCK_RECOMMENDATION = {
-  product: {
-    id: 60,
-    name: 'Revlon Super Lustrous Lipstick',
-    brand: 'Revlon',
-    image_link:
-      'https://d3t32hsnjxo7q6.cloudfront.net/i/6618c0f47d043084550818a74e6250aa_ra,w158,h184_pa,w158,h184.jpg',
-  },
-  recommendation:
-    '¡Hola! ¡Me encanta que tengas el Revlon Super Lustrous Lipstick! Es un clásico por una razón, ¡y con tantos tonos fabulosos, seguro que encontrarás tu pareja perfecta!\n\n**Preparación es Clave:**\n\n1. **Exfolia Suavemente:** Antes de nada, asegúrate de que tus labios estén suaves. Esto eliminará cualquier piel seca para que el color se aplique de manera uniforme.\n2. **Hidrata:** Aplica un bálsamo labial ligero y déjalo actuar unos minutos. Luego, retira el exceso con una servilleta.\n\n**Aplicación para un Look Impecable:**\n\n3. **Define (Opcional):** Usa un perfilador de labios del mismo tono o ligeramente más claro. Dibuja suavemente el contorno de tus labios.\n4. **Aplica Directamente o con Brocha:** Puedes aplicar el labial directamente o con una brocha para mayor precisión.\n5. **Sella (Opcional):** Coloca una servilleta sobre tus labios y presiona suavemente. Aplica una segunda capa fina. ¡Esto ayuda a que el color se fije!\n\n¡Disfruta de tus labios espectaculares! ¡Te verás y te sentirás increíble!',
-};
 
 function renderMarkdown(text: string) {
   return text.split('\n').map((line, i) => {
@@ -36,12 +24,10 @@ function renderMarkdown(text: string) {
     const parts = line.split(/\*\*(.+?)\*\*/g);
     const rendered = parts.map((part, j) =>
       j % 2 === 1 ? (
-        <span key={j} className="font-semibold text-gray-700">
-          {part}
-        </span>
+        <span key={j} className="font-semibold text-gray-700">{part}</span>
       ) : (
         part
-      )
+      ),
     );
 
     return (
@@ -53,8 +39,16 @@ function renderMarkdown(text: string) {
 }
 
 export default function RecommendationModal() {
-  const { isRecommendationModalOpen, closeRecommendationModal } = useModal();
+  const { isRecommendationModalOpen, recommendationId, closeRecommendationModal } = useModal();
+  const { recommendation, isLoading, error, fetchRecommendation } = useRecommendation();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Cargar datos cuando se abre el modal
+  useEffect(() => {
+    if (isRecommendationModalOpen && recommendationId !== null) {
+      fetchRecommendation(recommendationId);
+    }
+  }, [isRecommendationModalOpen, recommendationId, fetchRecommendation]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -66,32 +60,45 @@ export default function RecommendationModal() {
 
   if (!isRecommendationModalOpen) return null;
 
-  const { product, recommendation } = MOCK_RECOMMENDATION;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] w-full max-w-2xl border border-gray-100 relative flex flex-col max-h-[90vh]">
 
         {/* Header fijo */}
         <div className="flex items-center gap-4 px-8 pt-8 pb-6 border-b border-gray-100 shrink-0">
-          <div className="w-14 h-14 rounded-xl bg-[#FFF0EA] flex items-center justify-center overflow-hidden shrink-0 border border-orange-50">
-            <Image
-              src={product.image_link}
-              alt={product.name}
-              width={56}
-              height={56}
-              className="object-contain"
-              unoptimized
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-[#F297A0] uppercase tracking-widest truncate">
-              {product.brand}
-            </p>
-            <h2 className="text-base font-semibold text-gray-800 leading-snug truncate">
-              {product.name}
-            </h2>
-          </div>
+          {isLoading ? (
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-14 h-14 rounded-xl bg-gray-100 animate-pulse shrink-0" />
+              <div className="flex flex-col gap-2 flex-1">
+                <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
+                <div className="h-4 w-40 bg-gray-100 rounded animate-pulse" />
+              </div>
+            </div>
+          ) : error ? (
+            <p className="text-red-500 text-sm flex-1">{error}</p>
+          ) : recommendation ? (
+            <>
+              <div className="w-14 h-14 rounded-xl bg-[#FFF0EA] flex items-center justify-center overflow-hidden shrink-0 border border-orange-50">
+                <Image
+                  src={recommendation.styleImg}
+                  alt={recommendation.style}
+                  width={56}
+                  height={56}
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-[#F297A0] uppercase tracking-widest truncate">
+                  Estilo recomendado
+                </p>
+                <h2 className="text-base font-semibold text-gray-800 leading-snug truncate">
+                  {recommendation.style}
+                </h2>
+              </div>
+            </>
+          ) : null}
+
           <button
             onClick={closeRecommendationModal}
             className="text-gray-300 hover:text-gray-500 transition-colors text-xl leading-none shrink-0 ml-2"
@@ -113,7 +120,14 @@ export default function RecommendationModal() {
           ref={scrollRef}
           className="px-8 pt-3 pb-6 overflow-y-auto flex flex-col gap-0.5 flex-1"
         >
-          {renderMarkdown(recommendation)}
+          {isLoading && (
+            <div className="flex flex-col gap-2 mt-2">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-3 bg-gray-100 rounded animate-pulse" style={{ width: `${70 + (i % 3) * 10}%` }} />
+              ))}
+            </div>
+          )}
+          {!isLoading && recommendation && renderMarkdown(recommendation.description)}
         </div>
 
         {/* Footer fijo */}

@@ -1,6 +1,15 @@
-import type { LuminaProduct } from './Product';
+/** Ejemplo visual dentro de una recomendación */
+export interface RecommendationExample {
+  title: string;
+  imageUrl: string;
+  tutorialTips: string;
+}
 
+/** Recomendación de estilo generada por IA */
 export interface Recommendation {
-  product: LuminaProduct;
-  recommendation: string;
+  id: number;
+  style: string;
+  description: string;
+  styleImg: string;
+  examples: RecommendationExample[];
 }
