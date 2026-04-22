@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useModal } from '../modals/ModalContext';
 
 export default function Navbar() {
-  const { openLoginModal } = useModal();
+  const { openLoginModal, openProfileModal } = useModal();
   const pathname = usePathname();
 
   const isLanding = pathname === '/';
@@ -26,7 +26,7 @@ export default function Navbar() {
     if (isLanding) {
       openLoginModal();
     } else {
-      console.log('Ir a perfil');
+      openProfileModal();
     }
   };
 

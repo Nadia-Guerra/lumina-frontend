@@ -9,6 +9,9 @@ interface ModalContextType {
   isReviewModalOpen: boolean;
   openReviewModal: () => void;
   closeReviewModal: () => void;
+  isProfileModalOpen: boolean;
+  openProfileModal: () => void;
+  closeProfileModal: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -16,6 +19,7 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   return (
     <ModalContext.Provider
@@ -26,6 +30,9 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         isReviewModalOpen,
         openReviewModal: () => setIsReviewModalOpen(true),
         closeReviewModal: () => setIsReviewModalOpen(false),
+        isProfileModalOpen,
+        openProfileModal: () => setIsProfileModalOpen(true),
+        closeProfileModal: () => setIsProfileModalOpen(false),
       }}
     >
       {children}

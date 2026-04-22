@@ -13,6 +13,7 @@ export interface ProductCardProps {
   images?: string[];
   colors?: string[];
   defaultLiked?: boolean;
+  onLikeChange?: (liked: boolean) => void;
 }
 
 const DEFAULT_COLORS = ['#F297A0', '#E8739A', '#C0504D', '#8B2635', '#5C1A2A'];
@@ -26,6 +27,7 @@ export default function ProductCard({
   images = ['/product_example.png'],
   colors = DEFAULT_COLORS,
   defaultLiked = false,
+  onLikeChange,
 }: ProductCardProps) {
   const [activeImg, setActiveImg] = useState(0);
   const [liked, setLiked] = useState(defaultLiked);
@@ -84,7 +86,12 @@ export default function ProductCard({
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold text-gray-700">{brand}</span>
           <button
-            onClick={(e) => { e.stopPropagation(); setLiked((l) => !l); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              const next = !liked;
+              setLiked(next);
+              onLikeChange?.(next);
+            }}
             className={`text-2xl leading-none transition-transform active:scale-75 ${liked ? 'text-[#F297A0]' : 'text-[#F297A0]/40'}`}
             aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           >
