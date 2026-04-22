@@ -18,26 +18,25 @@ export default function Navbar() {
 
         <div className="flex items-center gap-10">
           <Link
-            href="/"
-            className="text-gray-600 hover:text-[#E8739A] text-sm font-medium transition-colors"
-          >
-            Inicio
-          </Link>
-          <Link
-            href="/productos"
-            className="text-gray-600 hover:text-[#E8739A] text-sm font-medium transition-colors"
+            href="/home"
+            className="text-[#F297A0] hover:text-[#d45f87] text-sm font-medium transition-colors"
           >
             Productos
           </Link>
+          <Link
+            href="/favorites"
+            className="text-[#F297A0] hover:text-[#d45f87] text-sm font-medium transition-colors"
+          >
+            Favoritos
+          </Link>
         </div>
 
-        {/* CTA button */}
         <button
           id="navbar-login-btn"
           onClick={openLoginModal}
-          className="bg-[#E8739A] hover:bg-[#d45f87] text-white px-5 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer shadow-sm"
+          className="bg-[#F297A0] hover:bg-[#d45f87] text-white px-5 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 cursor-pointer shadow-sm"
         >
-          Iniciar Sesión
+          Perfil
         </button>
       </div>
     </nav>
