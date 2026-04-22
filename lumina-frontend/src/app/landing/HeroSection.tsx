@@ -1,6 +1,10 @@
+'use client';
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function HeroSection() {
+  const router = useRouter();
   return (
     <section
       id="inicio"
@@ -27,6 +31,7 @@ export default function HeroSection() {
           </p>
           <button
             id="hero-cta-btn"
+            onClick={() => router.push('/register')}
             className="self-start bg-[#E8739A] hover:bg-[#d45f87] text-white px-6 py-2.5 rounded-full text-lg font-semibold transition-all active:scale-95 cursor-pointer shadow-md mt-2"
           >
             Comienza ahora

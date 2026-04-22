@@ -9,10 +9,9 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-pink-100 shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-        {/* Logo */}
         <span
           className="text-2xl text-[#E8739A] tracking-wide select-none"
-          style={{ fontFamily: 'var(--font-parisienne), cursive', fontStyle: 'italic' }}
+          style={{ fontFamily: 'var(--font-montserrat-alternates), cursive', fontStyle: 'italic' }}
         >
           Lúmina
         </span>
