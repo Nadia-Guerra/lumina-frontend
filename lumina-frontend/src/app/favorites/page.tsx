@@ -1,50 +1,58 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
 import { useModal } from '@/app/share/modals/ModalContext';
+import { useFavorites } from '@/hooks/useFavorites';
+import { fetchProductById } from '@/infra/api/makeupApiClient';
+import type { ProductFromSchema } from '@/infra/api/schemas/productSchema';
 
-const COLORS_A = ['#F297A0', '#E8739A', '#C0504D', '#8B2635', '#5C1A2A'];
-const COLORS_B = ['#FBBFC7', '#F297A0', '#D95F7B', '#A33050', '#6B1A30'];
-
-const MOCK_FAVORITES = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  brand: 'Rare Beauty',
-  name: `Producto ${i + 1}`,
-  price: 6.0,
-  rating: 4.9,
-  images: ['/product_example.png'],
-  colors: i % 2 === 0 ? COLORS_A : COLORS_B,
-}));
-
-const TOTAL_PAGES = 5;
+const ITEMS_PER_PAGE = 12;
 
 export default function FavoritesPage() {
   const [page, setPage] = useState(1);
   const { openRecommendationModal } = useModal();
-  const [likedIds, setLikedIds] = useState<Set<number>>(
-    new Set(MOCK_FAVORITES.map((p) => p.id))
-  );
+  const { favoriteIds, isLoaded: favsLoaded } = useFavorites();
+  
+  const [products, setProducts] = useState<ProductFromSchema[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const visible = MOCK_FAVORITES.filter((p) => likedIds.has(p.id));
+  useEffect(() => {
+    if (!favsLoaded) return;
 
-  const handleLikeChange = (id: number, liked: boolean) => {
-    setLikedIds((prev) => {
-      const next = new Set(prev);
-      if (liked) next.add(id);
-      else next.delete(id);
-      return next;
-    });
-  };
+    const loadProducts = async () => {
+      setLoading(true);
+      try {
+        const promises = favoriteIds.map(id => fetchProductById(id));
+        const results = await Promise.all(promises);
+        // Filtramos nulos por si algún producto ya no existe
+        setProducts(results.filter((p): p is ProductFromSchema => p !== null));
+      } catch (e) {
+        console.error('Error fetching favorite products', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (favoriteIds.length > 0) {
+      loadProducts();
+    } else {
+      setProducts([]);
+      setLoading(false);
+    }
+  }, [favoriteIds, favsLoaded]);
+
+  const totalPages = Math.max(1, Math.ceil(products.length / ITEMS_PER_PAGE));
+  const visible = products.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   const getPages = () => {
     const pages: (number | '...')[] = [];
-    if (TOTAL_PAGES <= 7) return Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1);
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     pages.push(1);
     if (page > 3) pages.push('...');
-    for (let i = Math.max(2, page - 1); i <= Math.min(TOTAL_PAGES - 1, page + 1); i++) pages.push(i);
-    if (page < TOTAL_PAGES - 2) pages.push('...');
-    pages.push(TOTAL_PAGES);
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i);
+    if (page < totalPages - 2) pages.push('...');
+    pages.push(totalPages);
     return pages;
   };
 
@@ -66,14 +74,26 @@ export default function FavoritesPage() {
         </div>
 
         {/* Grid */}
-        {visible.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <span className="text-[#F297A0] text-sm animate-pulse">Cargando favoritos...</span>
+          </div>
+        ) : products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
             {visible.map((p) => (
               <ProductCard
                 key={p.id}
-                {...p}
-                defaultLiked={true}
-                onLikeChange={(liked) => handleLikeChange(p.id, liked)}
+                id={p.id}
+                brand={p.brand}
+                name={p.name}
+                price={p.price}
+                rating={p.rating}
+                images={p.image_link ? [p.image_link] : ['/product_example.png']}
+                colors={
+                  p.product_colors && p.product_colors.length > 0
+                    ? p.product_colors.slice(0, 5).map((c) => c.hex_value)
+                    : undefined
+                }
               />
             ))}
           </div>
@@ -109,8 +129,8 @@ export default function FavoritesPage() {
             )
           )}
           <button
-            onClick={() => setPage((p) => Math.min(TOTAL_PAGES, p + 1))}
-            disabled={page === TOTAL_PAGES}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages || totalPages === 0}
             className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-[#FFF0EA] disabled:opacity-30 transition-colors text-sm"
           >
             ›

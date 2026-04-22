@@ -37,7 +37,7 @@ export default function RootLayout({
       lang="es"
       className={`${poppins.variable} ${parisienne.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ModalProvider>
           <Navbar />
           {/* MainWrapper aplica pt-[60px] solo en rutas con navbar */}
