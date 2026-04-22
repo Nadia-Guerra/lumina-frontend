@@ -8,8 +8,10 @@ export interface ProductCardProps {
   id?: number;
   brand: string;
   name: string;
-  price: number;
-  rating: number;
+  /** Acepta number (mock), string (makeup API: "11.49") o null */
+  price: number | string | null;
+  /** Acepta number (rating) o null si el producto no tiene reseñas aún */
+  rating: number | null;
   images?: string[];
   colors?: string[];
   defaultLiked?: boolean;
@@ -115,11 +117,15 @@ export default function ProductCard({
         </div>
 
         {/* Price */}
-        <p className="text-base font-bold text-[#F297A0] leading-tight">${price.toFixed(2)}</p>
+        <p className="text-base font-bold text-[#F297A0] leading-tight">
+          {price != null
+            ? `$${parseFloat(String(price)).toFixed(2)}`
+            : 'Sin precio'}
+        </p>
 
         {/* Rating */}
         <p className="text-xs text-gray-400 leading-tight">
-          {rating} <span className="text-yellow-400">★</span>
+          {rating != null ? <>{rating} <span className="text-yellow-400">★</span></> : 'Sin rating'}
         </p>
       </div>
     </article>

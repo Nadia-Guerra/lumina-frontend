@@ -21,7 +21,6 @@ export default function LoadingBar({ loading, color = '#F297A0' }: LoadingBarPro
       setWidth(0);
       setVisible(true);
 
-      // Avanza rápido hasta ~80%, luego se detiene esperando que loading sea false
       let current = 0;
       const tick = () => {
         current = current < 30 ? current + 3
@@ -47,7 +46,6 @@ export default function LoadingBar({ loading, color = '#F297A0' }: LoadingBarPro
       cancelAnimationFrame(raf);
       clearTimeout(timeout);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   if (!visible) return null;
