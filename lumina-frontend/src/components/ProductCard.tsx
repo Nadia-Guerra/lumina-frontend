@@ -2,8 +2,10 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export interface ProductCardProps {
+  id?: number;
   brand: string;
   name: string;
   price: number;
@@ -15,6 +17,7 @@ export interface ProductCardProps {
 const DEFAULT_COLORS = ['#F297A0', '#E8739A', '#C0504D', '#8B2635', '#5C1A2A'];
 
 export default function ProductCard({
+  id = 1,
   brand,
   name,
   price,
@@ -25,12 +28,20 @@ export default function ProductCard({
   const [activeImg, setActiveImg] = useState(0);
   const [liked, setLiked] = useState(false);
   const [activeColor, setActiveColor] = useState(0);
+  const router = useRouter();
 
   const prev = () => setActiveImg((i) => (i - 1 + images.length) % images.length);
   const next = () => setActiveImg((i) => (i + 1) % images.length);
 
+  const handleCardClick = () => {
+    router.push(`/product/${id}`);
+  };
+
   return (
-    <article className="bg-[#FFF8F5] rounded-2xl overflow-hidden flex flex-col gap-0 hover:shadow-md transition-shadow cursor-pointer group select-none">
+    <article 
+      onClick={handleCardClick}
+      className="bg-[#FFF8F5] rounded-2xl overflow-hidden flex flex-col gap-0 hover:shadow-md transition-shadow cursor-pointer group select-none"
+    >
       {/* Image carousel */}
       <div className="relative w-full aspect-square bg-[#FFF0EA] overflow-hidden">
         {/* Carousel image */}
