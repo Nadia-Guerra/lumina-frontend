@@ -17,7 +17,6 @@ export default function HomePage() {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
   const [page, setPage]           = useState(1);
 
-  // Fetch al montar y cuando cambia la marca activa (filtramos por brand en la API)
   const loadProducts = useCallback(async (brand: string | null) => {
     setLoading(true);
     setError(null);
@@ -36,7 +35,6 @@ export default function HomePage() {
     loadProducts(activeBrand);
   }, [activeBrand, loadProducts]);
 
-  // Filtrado local por texto de búsqueda
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
     if (!q) return products;
@@ -47,7 +45,6 @@ export default function HomePage() {
     );
   }, [products, search]);
 
-  // Paginación client-side
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
@@ -81,7 +78,6 @@ export default function HomePage() {
           onPageChange={setPage}
         />
 
-        {/* Estados */}
         {loading && (
           <div className="flex justify-center py-20">
             <span className="text-[#F297A0] text-sm animate-pulse">Cargando productos...</span>
@@ -129,7 +125,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Paginación inferior */}
         {!loading && !error && totalPages > 1 && (
           <div className="flex justify-center pt-4">
             <SearchWithPagination

@@ -82,11 +82,9 @@ export default function ProductCard({
         )}
       </div>
 
-      {/* Card body */}
       <div className="flex flex-col gap-2 px-3 pt-2.5 pb-3">
-        {/* Brand + heart */}
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">{brand}</span>
+          <span className="text-sm font-semibold text-gray-700">{name}</span>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -101,7 +99,6 @@ export default function ProductCard({
           </button>
         </div>
 
-        {/* Color dot picker */}
         <div className="flex items-center gap-1.5">
           {colors.map((c, i) => (
             <button
@@ -116,16 +113,12 @@ export default function ProductCard({
           ))}
         </div>
 
-        {/* Price */}
         <p className="text-base font-bold text-[#F297A0] leading-tight">
-          {price != null
-            ? `$${parseFloat(String(price)).toFixed(2)}`
-            : 'Sin precio'}
+          {price != null ? `$${parseFloat(String(price)).toFixed(2)}` : '—'}
         </p>
 
-        {/* Rating */}
         <p className="text-xs text-gray-400 leading-tight">
-          {rating != null ? <>{rating} <span className="text-yellow-400">★</span></> : 'Sin rating'}
+          {rating != null ? <>{rating} <span className="text-yellow-400">★</span></> : '—'}
         </p>
       </div>
     </article>

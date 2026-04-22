@@ -14,9 +14,12 @@ export const ProductSchema = z.object({
   currency: z.string().nullable().default(null),
   image_link: z
     .string()
-    .transform((v) => (v.startsWith('//') ? `https:${v}` : v))
-    .pipe(z.string().url())
-    .catch('/product_example.png'), // fallback si la URL sigue siendo inválida
+    .nullable()
+    .transform((v) => {
+      if (!v) return '/product_example.png';
+      if (v.startsWith('//')) return `https:${v}`;
+      return v;
+    }),
   product_link: z.string().nullable().default(null),
   website_link: z.string().nullable().default(null),
   description: z.string().nullable().default(null),
