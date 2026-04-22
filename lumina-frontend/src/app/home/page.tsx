@@ -22,7 +22,9 @@ export default function HomePage() {
     setError(null);
     try {
       const data = await fetchProducts(brand ? { brand } : {});
-      setProducts(data);
+      // shufle de productos
+      const shuffledData = [...data].sort(() => Math.random() - 0.5);
+      setProducts(shuffledData);
     } catch (e) {
       setError('No se pudieron cargar los productos. Intenta de nuevo.');
       console.error(e);
