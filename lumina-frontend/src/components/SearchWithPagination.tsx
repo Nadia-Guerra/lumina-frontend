@@ -46,7 +46,7 @@ export default function SearchWithPagination({
             placeholder="Buscar por nombre o marca"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl border border-[#F297A0]/30 bg-[#FFF0EA] text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#F297A0]/40 transition"
+            className="w-full pl-9 pr-4 py-2 rounded-xl border border-[#F297AB]/30 bg-[#FFE4E7] text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#F297AB]/40 transition"
           />
         </div>
 
@@ -55,7 +55,7 @@ export default function SearchWithPagination({
             id="pagination-prev"
             onClick={() => onPageChange(Math.max(1, page - 1))}
             disabled={page === 1}
-            className="w-8 h-8 rounded-lg border border-[#F297A0]/40 flex items-center justify-center text-[#F297A0] text-sm font-bold hover:bg-[#F297A0]/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="w-8 h-8 rounded-lg border border-[#68700C]/40 flex items-center justify-center text-[#68700C] text-sm font-bold hover:bg-[#68700C]/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
             aria-label="Página anterior"
           >
             ‹
@@ -73,8 +73,8 @@ export default function SearchWithPagination({
                 onClick={() => onPageChange(p as number)}
                 className={`w-8 h-8 rounded-lg border text-sm font-semibold transition ${
                   page === p
-                    ? 'bg-[#F297A0] border-[#F297A0] text-white shadow-sm'
-                    : 'border-[#F297A0]/30 text-gray-600 hover:bg-[#F297A0]/10'
+                    ? 'bg-[#B6BB79] border-[#68700C] text-white shadow-sm'
+                    : 'border-[#68700C]/40 text-gray-600 hover:bg-[#68700C]/10'
                 }`}
               >
                 {p}
@@ -86,7 +86,7 @@ export default function SearchWithPagination({
             id="pagination-next"
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
-            className="w-8 h-8 rounded-lg border border-[#F297A0]/40 flex items-center justify-center text-[#F297A0] text-sm font-bold hover:bg-[#F297A0]/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="w-8 h-8 rounded-lg border border-[#68700C]/40 flex items-center justify-center text-[#68700C] text-sm font-bold hover:bg-[#68700C]/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
             aria-label="Página siguiente"
           >
             ›
