@@ -5,10 +5,14 @@ import { usePathname } from 'next/navigation';
 import { useModal } from '../modals/ModalContext';
 
 export default function Navbar() {
-  const { openLoginModal } = useModal();
+  const { openLoginModal, openProfileModal } = useModal();
   const pathname = usePathname();
 
   const isLanding = pathname === '/';
+  const isRegister = pathname === '/register';
+
+  if (isRegister) return null;
+
 
   const links = isLanding
     ? [
@@ -26,7 +30,7 @@ export default function Navbar() {
     if (isLanding) {
       openLoginModal();
     } else {
-      console.log('Ir a perfil');
+      openProfileModal();
     }
   };
 

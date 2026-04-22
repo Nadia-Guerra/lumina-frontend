@@ -8,10 +8,14 @@ export interface ProductCardProps {
   id?: number;
   brand: string;
   name: string;
-  price: number;
-  rating: number;
+  /** Acepta number (mock), string (makeup API: "11.49") o null */
+  price: number | string | null;
+  /** Acepta number (rating) o null si el producto no tiene reseñas aún */
+  rating: number | null;
   images?: string[];
   colors?: string[];
+  defaultLiked?: boolean;
+  onLikeChange?: (liked: boolean) => void;
 }
 
 const DEFAULT_COLORS = ['#F297A0', '#E8739A', '#C0504D', '#8B2635', '#5C1A2A'];
@@ -24,9 +28,11 @@ export default function ProductCard({
   rating,
   images = ['/product_example.png'],
   colors = DEFAULT_COLORS,
+  defaultLiked = false,
+  onLikeChange,
 }: ProductCardProps) {
   const [activeImg, setActiveImg] = useState(0);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(defaultLiked);
   const [activeColor, setActiveColor] = useState(0);
   const router = useRouter();
 
@@ -76,25 +82,27 @@ export default function ProductCard({
         )}
       </div>
 
-      {/* Card body */}
       <div className="flex flex-col gap-2 px-3 pt-2.5 pb-3">
-        {/* Brand + heart */}
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">{brand}</span>
+          <span className="text-sm font-semibold text-gray-700">{name}</span>
           <button
-            onClick={(e) => { e.stopPropagation(); setLiked((l) => !l); }}
-            className={`text-lg leading-none transition-transform active:scale-75 ${liked ? 'text-[#F297A0]' : 'text-[#F297A0]/50'}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              const next = !liked;
+              setLiked(next);
+              onLikeChange?.(next);
+            }}
+            className={`text-2xl leading-none transition-transform active:scale-75 ${liked ? 'text-[#F297A0]' : 'text-[#F297A0]/40'}`}
             aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
           >
             {liked ? '♥' : '♡'}
           </button>
         </div>
 
-        {/* Color dot picker */}
         <div className="flex items-center gap-1.5">
           {colors.map((c, i) => (
             <button
-              key={c}
+              key={`${i}-${c}`}
               onClick={(e) => { e.stopPropagation(); setActiveColor(i); }}
               style={{ backgroundColor: c }}
               className={`w-4 h-4 rounded-full transition-all ${
@@ -105,12 +113,12 @@ export default function ProductCard({
           ))}
         </div>
 
-        {/* Price */}
-        <p className="text-base font-bold text-[#F297A0] leading-tight">${price.toFixed(2)}</p>
+        <p className="text-base font-bold text-[#F297A0] leading-tight">
+          {price != null ? `$${parseFloat(String(price)).toFixed(2)}` : '—'}
+        </p>
 
-        {/* Rating */}
         <p className="text-xs text-gray-400 leading-tight">
-          {rating} <span className="text-yellow-400">★</span>
+          {rating != null ? <>{rating} <span className="text-yellow-400">★</span></> : '—'}
         </p>
       </div>
     </article>

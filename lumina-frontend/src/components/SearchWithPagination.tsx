@@ -43,7 +43,7 @@ export default function SearchWithPagination({
           <input
             id="product-search-input"
             type="text"
-            placeholder="Buscar por nombre o marca"
+            placeholder="Buscar producto o marca"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl border border-[#F297AB]/30 bg-[#FFE4E7] text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#F297AB]/40 transition"
