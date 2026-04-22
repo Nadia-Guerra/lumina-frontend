@@ -16,7 +16,6 @@ export default function Navbar() {
           Lúmina
         </span>
 
-        {/* Nav links */}
         <div className="flex items-center gap-10">
           <Link
             href="/"
