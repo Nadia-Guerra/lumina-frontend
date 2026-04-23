@@ -1,19 +1,9 @@
 import { z } from 'zod';
 import { ProductListSchema, ProductSchema } from './schemas/productSchema';
 
-/**
- * URL base del makeup API.
- * Cambia NEXT_PUBLIC_MAKEUP_API_URL en .env.local para apuntar a otro servidor
- * sin tocar código.
- */
 const BASE_URL =
-  process.env.NEXT_PUBLIC_MAKEUP_API_URL ??
-  'https://makeup-api.herokuapp.com/api/v1';
+  process.env.NEXT_PUBLIC_LUMINA_API_URL 
 
-/**
- * Convierte un objeto de parámetros en una query string,
- * omitiendo valores undefined, null o string vacío.
- */
 function buildQuery(params: Record<string, string | number | undefined | null>): string {
   const entries = Object.entries(params).filter(
     ([, v]) => v !== undefined && v !== null && v !== ''
@@ -22,10 +12,6 @@ function buildQuery(params: Record<string, string | number | undefined | null>):
   return '?' + entries.map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join('&');
 }
 
-/**
- * Busca productos aplicando los filtros dados.
- * GET /products.json?brand=...&product_type=...&...
- */
 export async function fetchProducts(
   params: Record<string, string | number | undefined | null> = {}
 ): Promise<z.infer<typeof ProductListSchema>> {
@@ -38,12 +24,9 @@ export async function fetchProducts(
 
   const raw = await res.json();
 
-  // Zod parsea y valida. safeParse para no romper la app si un producto tiene
-  // datos corruptos — los filtra en lugar de tirar un crash.
   const result = ProductListSchema.safeParse(raw);
   if (!result.success) {
     console.warn('[makeup API] Algunos productos fallaron la validación:', result.error.flatten());
-    // Intento rescatar los productos válidos uno por uno
     if (Array.isArray(raw)) {
       return raw.flatMap((item) => {
         const r = ProductSchema.safeParse(item);
@@ -56,10 +39,6 @@ export async function fetchProducts(
   return result.data;
 }
 
-/**
- * Obtiene un producto por ID.
- * GET /products/{id}.json
- */
 export async function fetchProductById(
   id: number
 ): Promise<z.infer<typeof ProductSchema> | null> {
