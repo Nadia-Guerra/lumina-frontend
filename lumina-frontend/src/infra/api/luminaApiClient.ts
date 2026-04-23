@@ -1,11 +1,5 @@
-/**
- * Cliente HTTP base para el Lumina Backend API.
- * Lee NEXT_PUBLIC_LUMINA_API_URL del entorno.
- */
-
 const BASE_URL =
-  process.env.NEXT_PUBLIC_LUMINA_API_URL ??
-  'https://lumina-backend.onrender.com/api';
+  process.env.NEXT_PUBLIC_LUMINA_API_URL 
 
 export class LuminaApiError extends Error {
   constructor(
