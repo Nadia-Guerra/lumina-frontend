@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { ProductListSchema, ProductSchema } from './schemas/productSchema';
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_LUMINA_API_URL 
+import { luminaFetch, LuminaApiError } from './luminaApiClient';
 
 function buildQuery(params: Record<string, string | number | undefined | null>): string {
   const entries = Object.entries(params).filter(
@@ -15,18 +13,20 @@ function buildQuery(params: Record<string, string | number | undefined | null>):
 export async function fetchProducts(
   params: Record<string, string | number | undefined | null> = {}
 ): Promise<z.infer<typeof ProductListSchema>> {
-  const url = `${BASE_URL}/products.json${buildQuery(params)}`;
-  const res = await fetch(url, { next: { revalidate: 60 * 10 } }); // cache 10 min
+  const finalParams = { limit: 100, ...params };
+  
+  const hasFilters = Object.keys(finalParams).some(k => k !== 'page' && k !== 'limit');
+  const endpoint = hasFilters ? '/products/search' : '/products';
+  
+  const res = await luminaFetch<{ success: boolean; data: { products: unknown[] } }>(
+    `${endpoint}${buildQuery(finalParams)}`
+  );
 
-  if (!res.ok) {
-    throw new Error(`Error al obtener productos: ${res.status} ${res.statusText}`);
-  }
-
-  const raw = await res.json();
+  const raw = res.data.products;
 
   const result = ProductListSchema.safeParse(raw);
   if (!result.success) {
-    console.warn('[makeup API] Algunos productos fallaron la validación:', result.error.flatten());
+    console.warn('[Lumina API] Algunos productos fallaron la validación:', result.error.flatten());
     if (Array.isArray(raw)) {
       return raw.flatMap((item) => {
         const r = ProductSchema.safeParse(item);
@@ -42,21 +42,23 @@ export async function fetchProducts(
 export async function fetchProductById(
   id: number
 ): Promise<z.infer<typeof ProductSchema> | null> {
-  const url = `${BASE_URL}/products/${id}.json`;
-  const res = await fetch(url, { next: { revalidate: 60 * 10 } });
+  try {
+    // Reemplazado a luminaFetch
+    const res = await luminaFetch<{ success: boolean; data: unknown }>(`/products/${id}`);
+    const raw = res.data;
 
-  if (res.status === 404) return null;
-  if (!res.ok) {
-    throw new Error(`Error al obtener producto ${id}: ${res.status}`);
+    const result = ProductSchema.safeParse(raw);
+
+    if (!result.success) {
+      console.warn(`[Lumina API] Producto ${id} inválido:`, result.error.flatten());
+      return null;
+    }
+
+    return result.data;
+  } catch (error: unknown) {
+    if (error instanceof LuminaApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
   }
-
-  const raw = await res.json();
-  const result = ProductSchema.safeParse(raw);
-
-  if (!result.success) {
-    console.warn(`[makeup API] Producto ${id} inválido:`, result.error.flatten());
-    return null;
-  }
-
-  return result.data;
 }

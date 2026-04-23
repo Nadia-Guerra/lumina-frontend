@@ -139,7 +139,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Error */}
             {error && (
               <p className="text-red-500 text-sm font-medium text-center">
                 {error}
